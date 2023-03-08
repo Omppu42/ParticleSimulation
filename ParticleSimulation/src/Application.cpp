@@ -81,9 +81,16 @@ int main(void)
 
         //Spawn particles
         ParticleSpawner spawner;
+
+        //fill screen with particles
         //spawner.SpawnSquare(5000, particlesVector);
-        spawner.SpawnGalaxy({ -0.3f,  0.3f }, { 0.0f, -300.0f }, 1000, 100000.0f, 100.5f, .1f, 1000.0f, particlesVector); //IMPORTANT: When editing this, make sure to adjust TIMESTEP in 
-        spawner.SpawnGalaxy({  0.3f, -0.3f }, { 0.0f,  300.0f }, 3000, 100000.0f,    .5f, .1f, 1000.0f, particlesVector); //                               Particle.cpp for best results
+        
+        //                Start pos -1.0f to 1.0f          particle count    particle mass                        IMPORTANT: When editing this, make sure to adjust TIMESTEP in 
+        //                          |         start velocity      |  center mass   |         spin speed           scr\Simulation\Particle.cpp for approprate simulation speed
+        spawner.SpawnGalaxy({ -0.3f,  0.3f }, { 0.0f, -300.0f }, 1000, 100000.0f, 100.5f, .1f, 1000.0f, particlesVector);
+        spawner.SpawnGalaxy({  0.3f, -0.3f }, { 0.0f,  300.0f }, 3000, 100000.0f,    .5f, .1f, 1000.0f, particlesVector);
+        //                                                                                  |              DONT CHANGE                                             
+        //                                                                            galaxy radius
         
         std::cout << "Number of particles: " << particlesVector.size() << std::endl;
 
