@@ -3,7 +3,7 @@ A particle simulation made with OpenGL and C++ by Omppu42
 
 ## Running
 Download and extract the project. <br>
-Navigate to ```\Releases``` and run ```ParticleSimulation.exe``` <br>
+Navigate to ```\Release``` and run ```ParticleSimulation.exe``` <br>
 
 ### Made using Windows. You may encounter unexpected behavior when using other platforms. <br>
   
