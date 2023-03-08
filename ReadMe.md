@@ -1,5 +1,10 @@
 # ParticleSimulation
-A particle simulation made with OpenGL and C++ by Omppu42
+A particle simulation made with OpenGL and C++ by Omppu42 <br> <br>
+
+ <img src="ParticleSimulation/res/images/Image1.png" width="660" height="660">
+
+
+![Image of ParticleSimulation](ParticleSimulation/res/images/Image2.png)
 
 ## Running
 Download and extract the project. <br>
