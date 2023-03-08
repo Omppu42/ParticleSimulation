@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# CUSTOM
+*.exe.recipe
+*.vcxproj.FileListAbsolute.txt
+
 # User-specific files
 *.rsuser
 *.suo
