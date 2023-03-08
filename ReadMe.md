@@ -10,5 +10,5 @@ Navigate to ```\Release``` and run ```ParticleSimulation.exe``` <br>
 ## Editing
 ### Use Visual Studio 2022 to edit the project
 Open the solution file in VS 2022 <br>
-You can edit some values in ```ParticleSimulation\ParticleSimulation\src\Application.cpp``` on line 90 <br>
+You can edit some values in ```\ParticleSimulation\src\Application.cpp``` on line 90 <br>
 To run, first save with ctrl + S and run with F5
