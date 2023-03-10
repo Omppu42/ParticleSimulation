@@ -16,7 +16,7 @@ public:
 	VertexBuffer(std::vector<Vertex> data, unsigned int size, GLenum renderHint);
 	~VertexBuffer();
 
-	void UpdateBuffer(std::vector<Vertex> data, unsigned int size);
+	void UpdateBuffer(std::vector<Vertex>& data, unsigned int size);
 	void Bind() const;
 	void Unbind() const;
 };

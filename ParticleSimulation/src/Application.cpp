@@ -26,22 +26,8 @@
 
 #define CALCULATE_FRAMERATE true
 
-std::wstring ExePath() {
-    TCHAR buffer[MAX_PATH] = { 0 };
-    GetModuleFileName(NULL, buffer, MAX_PATH);
-    std::wstring::size_type pos = std::wstring(buffer).find_last_of(L"\\/");
-    return std::wstring(buffer).substr(0, pos);
-}
-
 int main(void)
 {
-    /*using convert_type = std::codecvt_utf8<wchar_t>;
-    std::wstring_convert<convert_type, wchar_t> converter;
-
-    std::string converted_str = converter.to_bytes(ExePath());
-
-    std::cout << "Executing from " << converted_str << std::endl;*/
-
     GLFWwindow* window;
 
     /* Initialize the library */
@@ -162,10 +148,10 @@ int main(void)
             ib.Bind();
             vb.Bind();
 
-            vb.UpdateBuffer(positions, positions.size() * 2 * sizeof(float)); 
+            vb.UpdateBuffer(positions, positions.size() * 2 * sizeof(float));
 
             //draw particles
-            GLCall(glDrawElements(GL_TRIANGLES, squareIndicies.size() * 6, GL_UNSIGNED_INT, nullptr));
+            GLCall(glDrawElements(GL_TRIANGLES, squareIndicies.size() * 6, GL_UNSIGNED_INT, nullptr)); 
 
             glfwSwapBuffers(window);
             glfwPollEvents();

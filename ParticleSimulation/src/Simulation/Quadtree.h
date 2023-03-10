@@ -203,17 +203,13 @@ public:
 	bool OnlyCalclateThisCOM(Particle& p, std::vector<float>& thisQuadrantCOM, float size) {
 		ASSERT(thisQuadrantCOM.size() == 2);
 
-		float distance = GetDistance(p.m_X, p.m_Y, thisQuadrantCOM[0], thisQuadrantCOM[1]);
+		float distance = sqrt(pow(thisQuadrantCOM[0] - p.m_X, 2) + pow(thisQuadrantCOM[1] - p.m_Y, 2));
 
 		if (size / distance < FAR_AWAY_TRESHOLD) {
 			return true;
 		}
 
 		return false;
-	}
-
-	float GetDistance(float p1x, float p1y, float p2x, float p2y) {
-		return (float)sqrt(pow(p2x - p1x, 2) + pow(p2y - p1y, 2) * 1.0f);
 	}
 
 	void CalculateCOM() {

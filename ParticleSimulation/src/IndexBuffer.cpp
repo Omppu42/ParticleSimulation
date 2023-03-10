@@ -11,7 +11,7 @@ IndexBuffer::IndexBuffer(std::vector<SquareIndicies>& data, GLenum renderHint) :
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
 
     UpdateIndicies(data);
-    
+
 }
 
 IndexBuffer::~IndexBuffer() {
