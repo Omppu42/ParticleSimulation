@@ -14,6 +14,10 @@ private:
 	float m_VelY;
 
 	float m_Radius;
+	float m_R;
+	float m_G;
+	float m_B;
+	float m_A;
 
 public:
 	float m_X;
@@ -21,7 +25,8 @@ public:
 	float m_Mass;
 
 	Particle(float startX, float startY, float velX, float velY, float mass, float radius)
-		: m_X(startX), m_Y(startY), m_VelX(velX), m_VelY(velY), m_Mass(mass), m_Radius(radius) {
+		: m_X(startX), m_Y(startY), m_VelX(velX), m_VelY(velY), m_Mass(mass), m_Radius(radius),
+			m_R(1.0f), m_G(1.0f), m_B(1.0f), m_A(1.0f) {
 	}
 
 	void calculateForceWithParticle(const Particle& otherParticle);

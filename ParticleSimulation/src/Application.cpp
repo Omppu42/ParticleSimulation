@@ -26,6 +26,12 @@
 
 #define CALCULATE_FRAMERATE true
 
+// Constant color:
+// 8K particles at 17.5fps
+// 
+// color changing with speed:
+// 8K particles at 15.9fps
+
 int main(void)
 {
     GLFWwindow* window;
@@ -69,12 +75,13 @@ int main(void)
         ParticleSpawner spawner;
 
         //fill screen with particles
-        //spawner.SpawnSquare(5000, particlesVector);
+        //spawner.SpawnSquare(300, particlesVector);
         
-        //                Start pos -1.0f to 1.0f          particle count    particle mass                        IMPORTANT: When editing this, make sure to adjust TIMESTEP in 
-        //                          |         start velocity      |  center mass   |         spin speed           scr\Simulation\Particle.cpp for approprate simulation speed
-        spawner.SpawnGalaxy({ -0.3f,  0.3f }, { 0.0f, -300.0f }, 1000, 100000.0f, 100.5f, .1f, 1000.0f, particlesVector);
-        spawner.SpawnGalaxy({  0.3f, -0.3f }, { 0.0f,  300.0f }, 3000, 100000.0f,    .5f, .1f, 1000.0f, particlesVector);
+        //                Start pos -1.0f to 1.0f          particle count    particle mass                          IMPORTANT: When editing this, make sure to adjust TIMESTEP in 
+        //                          |         start velocity      |  center mass   |            spin speed           scr\Simulation\Particle.cpp for approprate simulation speed
+        //spawner.SpawnGalaxy({ -0.3f,  0.3f }, { 0.0f, -300.0f }, 3000, 100000.0f, 100.5f, .1f, 1000.0f, particlesVector);
+        //spawner.SpawnGalaxy({  0.3f, -0.3f }, { 0.0f,  300.0f }, 3000, 100000.0f,    .5f, .1f, 1000.0f, particlesVector);
+        spawner.SpawnGalaxy({  0.0f, 0.0f },  { 0.0f,  -300.0f }, 20000, 100000.0f,    .5f, .3f, 1000.0f, particlesVector);
         //                                                                                  |              DONT CHANGE                                             
         //                                                                            galaxy radius
         
@@ -89,7 +96,7 @@ int main(void)
         VertexBuffer vb(positions, positions.size() * 2 * sizeof(float), GL_DYNAMIC_DRAW);
 
         VertexBufferLayout layout;
-        layout.Push(GL_FLOAT, 2, GL_FALSE);
+        layout.Push(GL_FLOAT, 2, GL_FALSE); //TODO: Continue from here adding this into code
         va.AddBuffer(vb, layout);
 
         IndexBuffer ib(squareIndicies, GL_STATIC_DRAW);
@@ -100,9 +107,9 @@ int main(void)
         GLCall(glUseProgram(shader));
 
         //set particle color
-        GLCall(int location = glGetUniformLocation(shader, "u_Color"));
-        ASSERT(location != -1);
-        GLCall(glUniform4f(location, 0.1f, 0.3f, 0.8f, 1.0f));
+        /*GLCall(int location = glGetUniformLocation(shader, "u_Color"));
+        ASSERT(location != -1);*/
+        //GLCall(glUniform4f(location, 0.1f, 0.3f, 0.8f, 1.0f));
 
         GLCall(glUseProgram(0));
         vb.Unbind();
@@ -114,6 +121,10 @@ int main(void)
 
         double previousTime = glfwGetTime();
         const double frameTime = 1.0 / TARGET_FPS;
+
+        // Enable blending
+        GLCall(glEnable(GL_BLEND)); 
+        GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
         while (!glfwWindowShouldClose(window))
         {
@@ -144,12 +155,29 @@ int main(void)
 
             GLCall(glUseProgram(shader));
 
+
             va.Bind();
             ib.Bind();
             vb.Bind();
 
-            vb.UpdateBuffer(positions, positions.size() * 2 * sizeof(float));
+            vb.UpdateBuffer(positions, positions.size() * 6 * sizeof(float));
 
+            /*float* floatPtr = 0;
+            const void* voidPtr = static_cast<const void*>(floatPtr);
+
+            float* floatPtr2 = 8;
+            const void* voidPtr = static_cast<const void*>(8);*/
+
+            //TODO: Switch to VertexBufferLayout
+
+            GLCall(glEnableVertexAttribArray(0));
+            GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, false, 6 * sizeof(float), (GLvoid*)0));
+
+            GLCall(glEnableVertexAttribArray(1));
+            GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, false, 6 * sizeof(float), (GLvoid*)8));
+
+            //std::cout << "color location: " << glGetAttribLocation(shader, "color") << std::endl;
+            
             //draw particles
             GLCall(glDrawElements(GL_TRIANGLES, squareIndicies.size() * 6, GL_UNSIGNED_INT, nullptr)); 
 
@@ -160,7 +188,7 @@ int main(void)
 
             if (CALCULATE_FRAMERATE) {
                 frameNum++;
-                if (frameNum == 100) {
+                if (frameNum == 200) {
                     std::cout << "Average Framerate: " << 1 / ((glfwGetTime() - startTime) / frameNum) << ", current time: " << glfwGetTime() - startTime << std::endl;
                 }
             }

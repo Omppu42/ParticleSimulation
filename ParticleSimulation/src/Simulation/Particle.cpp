@@ -8,6 +8,7 @@
 
 #define TIMESTEP 0.00001f
 #define GRAVITY 9.809f
+#define MAX_SPEED 20.0f
 
 
 void Particle::calculateForceWithParticle(const Particle& otherParticle) {
@@ -58,13 +59,24 @@ void Particle::UpdatePosition() {
 
 	m_X += m_VelX * TIMESTEP;
 	m_Y += m_VelY * TIMESTEP;
+
+	float vel = sqrt(abs(m_VelX) * abs(m_VelX) * TIMESTEP + abs(m_VelY) * abs(m_VelY) * TIMESTEP);
+	//std::cout << "VelX: " << m_VelX << ", VelY: " << m_VelY << ", Vel: " << vel << std::endl;
+
+	vel /= MAX_SPEED;
+
+	//std::cout << "speed of particle: " << vel << std::endl;
+	vel = vel < 1 ? vel : 1;
+
+	m_A = vel;
+
 }
 
 void Particle::createParticleVerticies(std::vector<Vertex>& verticies, std::vector<SquareIndicies>& squareIndicies) {
-    std::vector<Vertex> newVerticies = { {m_X - m_Radius, m_Y - m_Radius},
-                                         {m_X + m_Radius, m_Y - m_Radius},
-                                         {m_X + m_Radius, m_Y + m_Radius},
-                                         {m_X - m_Radius, m_Y + m_Radius} };
+    std::vector<Vertex> newVerticies = { {m_X - m_Radius, m_Y - m_Radius, m_R, m_G, m_B, m_A},
+                                         {m_X + m_Radius, m_Y - m_Radius, m_R, m_G, m_B, m_A},
+                                         {m_X + m_Radius, m_Y + m_Radius, m_R, m_G, m_B, m_A},
+                                         {m_X - m_Radius, m_Y + m_Radius, m_R, m_G, m_B, m_A} };
 
     verticies.insert(verticies.end(), newVerticies.begin(), newVerticies.end());
 
@@ -72,10 +84,10 @@ void Particle::createParticleVerticies(std::vector<Vertex>& verticies, std::vect
     squareIndicies.push_back(SquareIndicies({ 0 + i, 1 + i, 2 + i, 2 + i, 3 + i, 0 + i }));
 }
 void Particle::createParticleVerticies(std::vector<Vertex>& verticies) {
-    std::vector<Vertex> newVerticies = { {m_X - m_Radius, m_Y - m_Radius},
-                                         {m_X + m_Radius, m_Y - m_Radius},
-                                         {m_X + m_Radius, m_Y + m_Radius},
-                                         {m_X - m_Radius, m_Y + m_Radius} };
+    std::vector<Vertex> newVerticies = { {m_X - m_Radius, m_Y - m_Radius, m_R, m_G, m_B, m_A},
+                                         {m_X + m_Radius, m_Y - m_Radius, m_R, m_G, m_B, m_A},
+                                         {m_X + m_Radius, m_Y + m_Radius, m_R, m_G, m_B, m_A},
+                                         {m_X - m_Radius, m_Y + m_Radius, m_R, m_G, m_B, m_A} };
 
     verticies.insert(verticies.end(), newVerticies.begin(), newVerticies.end());
 }

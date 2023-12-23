@@ -8,8 +8,7 @@
 void VertexBuffer::VertexVecToData(std::vector<Vertex>& dataIn, std::vector<float>& dataOut)
 {
     for (Vertex _vertex : dataIn) {
-        dataOut.push_back(_vertex.x);
-        dataOut.push_back(_vertex.y);
+        _vertex.GetData(dataOut);
     }
 }
 
