@@ -40,8 +40,8 @@ public:
 };
 
 #define MAX_PARTICLES 16
-#define MAX_DEPTH 8
-#define FAR_AWAY_TRESHOLD 50
+#define MAX_DEPTH 8 
+#define FAR_AWAY_TRESHOLD 90
 
 class Quadtree {
 private:

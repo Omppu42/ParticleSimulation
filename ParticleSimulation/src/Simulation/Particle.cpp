@@ -68,15 +68,15 @@ void Particle::UpdatePosition() {
 	//std::cout << "speed of particle: " << vel << std::endl;
 	vel = vel < 1 ? vel : 1;
 
-	m_A = vel;
+	m_Alpha = vel;
 
 }
 
 void Particle::createParticleVerticies(std::vector<Vertex>& verticies, std::vector<SquareIndicies>& squareIndicies) {
-    std::vector<Vertex> newVerticies = { {m_X - m_Radius, m_Y - m_Radius, m_R, m_G, m_B, m_A},
-                                         {m_X + m_Radius, m_Y - m_Radius, m_R, m_G, m_B, m_A},
-                                         {m_X + m_Radius, m_Y + m_Radius, m_R, m_G, m_B, m_A},
-                                         {m_X - m_Radius, m_Y + m_Radius, m_R, m_G, m_B, m_A} };
+	std::vector<Vertex> newVerticies = { {m_X - m_Radius, m_Y - m_Radius, m_Alpha},
+                                         {m_X + m_Radius, m_Y - m_Radius, m_Alpha},
+                                         {m_X + m_Radius, m_Y + m_Radius, m_Alpha},
+                                         {m_X - m_Radius, m_Y + m_Radius, m_Alpha} };
 
     verticies.insert(verticies.end(), newVerticies.begin(), newVerticies.end());
 
@@ -84,10 +84,11 @@ void Particle::createParticleVerticies(std::vector<Vertex>& verticies, std::vect
     squareIndicies.push_back(SquareIndicies({ 0 + i, 1 + i, 2 + i, 2 + i, 3 + i, 0 + i }));
 }
 void Particle::createParticleVerticies(std::vector<Vertex>& verticies) {
-    std::vector<Vertex> newVerticies = { {m_X - m_Radius, m_Y - m_Radius, m_R, m_G, m_B, m_A},
-                                         {m_X + m_Radius, m_Y - m_Radius, m_R, m_G, m_B, m_A},
-                                         {m_X + m_Radius, m_Y + m_Radius, m_R, m_G, m_B, m_A},
-                                         {m_X - m_Radius, m_Y + m_Radius, m_R, m_G, m_B, m_A} };
+
+	std::vector<Vertex> newVerticies = { {m_X - m_Radius, m_Y - m_Radius, m_Alpha},
+										 {m_X + m_Radius, m_Y - m_Radius, m_Alpha},
+										 {m_X + m_Radius, m_Y + m_Radius, m_Alpha},
+										 {m_X - m_Radius, m_Y + m_Radius, m_Alpha} };
 
     verticies.insert(verticies.end(), newVerticies.begin(), newVerticies.end());
 }

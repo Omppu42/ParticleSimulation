@@ -81,7 +81,7 @@ int main(void)
         //                          |         start velocity      |  center mass   |            spin speed           scr\Simulation\Particle.cpp for approprate simulation speed
         //spawner.SpawnGalaxy({ -0.3f,  0.3f }, { 0.0f, -300.0f }, 3000, 100000.0f, 100.5f, .1f, 1000.0f, particlesVector);
         //spawner.SpawnGalaxy({  0.3f, -0.3f }, { 0.0f,  300.0f }, 3000, 100000.0f,    .5f, .1f, 1000.0f, particlesVector);
-        spawner.SpawnGalaxy({  0.0f, 0.0f },  { 0.0f,  -300.0f }, 20000, 100000.0f,    .5f, .3f, 1000.0f, particlesVector);
+        spawner.SpawnGalaxy({  0.0f, 0.0f },  { 0.0f,  -300.0f }, 200000, 100000.0f,    .5f, .3f, 1000.0f, particlesVector);
         //                                                                                  |              DONT CHANGE                                             
         //                                                                            galaxy radius
         
@@ -93,10 +93,13 @@ int main(void)
         }
 
         VertexArray va;
-        VertexBuffer vb(positions, positions.size() * 2 * sizeof(float), GL_DYNAMIC_DRAW);
+        VertexBuffer vb(positions, 3 * sizeof(float), GL_DYNAMIC_DRAW);
 
         VertexBufferLayout layout;
-        layout.Push(GL_FLOAT, 2, GL_FALSE); //TODO: Continue from here adding this into code
+        layout.Push(GL_FLOAT, 2, GL_FALSE); // 1st 2 floats are position
+        //layout.Push(GL_FLOAT, 4, GL_FALSE); // next 4 floats are color
+        layout.Push(GL_FLOAT, 1, GL_FALSE); // next 1 float is alpha
+        
         va.AddBuffer(vb, layout);
 
         IndexBuffer ib(squareIndicies, GL_STATIC_DRAW);
@@ -160,25 +163,11 @@ int main(void)
             ib.Bind();
             vb.Bind();
 
-            vb.UpdateBuffer(positions, positions.size() * 6 * sizeof(float));
-
-            /*float* floatPtr = 0;
-            const void* voidPtr = static_cast<const void*>(floatPtr);
-
-            float* floatPtr2 = 8;
-            const void* voidPtr = static_cast<const void*>(8);*/
-
-            //TODO: Switch to VertexBufferLayout
-
-            GLCall(glEnableVertexAttribArray(0));
-            GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, false, 6 * sizeof(float), (GLvoid*)0));
-
-            GLCall(glEnableVertexAttribArray(1));
-            GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, false, 6 * sizeof(float), (GLvoid*)8));
+            vb.UpdateBuffer(positions);
 
             //std::cout << "color location: " << glGetAttribLocation(shader, "color") << std::endl;
             
-            //draw particles
+            // draw particles
             GLCall(glDrawElements(GL_TRIANGLES, squareIndicies.size() * 6, GL_UNSIGNED_INT, nullptr)); 
 
             glfwSwapBuffers(window);
@@ -186,12 +175,6 @@ int main(void)
 
             tree.ClearTree();
 
-            if (CALCULATE_FRAMERATE) {
-                frameNum++;
-                if (frameNum == 200) {
-                    std::cout << "Average Framerate: " << 1 / ((glfwGetTime() - startTime) / frameNum) << ", current time: " << glfwGetTime() - startTime << std::endl;
-                }
-            }
 
             if (CAP_FPS) {
                 // Calculate the time taken to render the frame
@@ -199,8 +182,15 @@ int main(void)
 
                 // Sleep for the remaining time
                 double sleepTime = frameTime - renderTime;
-                if (sleepTime > 0) {
+                if (sleepTime > 0.0f) {
                     std::this_thread::sleep_for(std::chrono::duration<double>(sleepTime));
+                }
+            }
+
+            if (CALCULATE_FRAMERATE) {
+                frameNum++;
+                if (frameNum == 100) {
+                    std::cout << "Average Framerate: " << 1 / ((glfwGetTime() - startTime) / frameNum) << ", current time: " << glfwGetTime() - startTime << std::endl;
                 }
             }
         }
