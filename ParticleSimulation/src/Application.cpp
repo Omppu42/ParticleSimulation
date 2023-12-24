@@ -74,6 +74,8 @@ int main(void)
         //Spawn particles
         ParticleSpawner spawner;
 
+        //TODO: Add quadtree visualization
+
         //fill screen with particles
         //spawner.SpawnSquare(300, particlesVector);
         
@@ -140,6 +142,8 @@ int main(void)
                 previousTime = currentTime;
             }
 
+            //std::cout << std::endl;
+
             positions = {};
             GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
@@ -189,7 +193,7 @@ int main(void)
 
             if (CALCULATE_FRAMERATE) {
                 frameNum++;
-                if (frameNum == 100) {
+                if (frameNum == 1000) {
                     std::cout << "Average Framerate: " << 1 / ((glfwGetTime() - startTime) / frameNum) << ", current time: " << glfwGetTime() - startTime << std::endl;
                 }
             }

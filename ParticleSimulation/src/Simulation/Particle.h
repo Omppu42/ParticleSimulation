@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 
+#define GRAVITY 9.809f
 
 class Particle {
 private:
@@ -16,6 +17,9 @@ private:
 	float m_Radius;
 	float m_Alpha;
 
+	float m_MassInverse;
+	float m_GravityTimesMass;
+
 public:
 	float m_X;
 	float m_Y;
@@ -24,6 +28,10 @@ public:
 	Particle(float startX, float startY, float velX, float velY, float mass, float radius)
 		: m_X(startX), m_Y(startY), m_VelX(velX), m_VelY(velY), m_Mass(mass), m_Radius(radius),
 			m_Alpha(1.0f) {
+
+		m_MassInverse = 1.0f / m_Mass;
+		m_GravityTimesMass = GRAVITY * m_Mass;
+
 	}
 
 	void calculateForceWithParticle(const Particle& otherParticle);

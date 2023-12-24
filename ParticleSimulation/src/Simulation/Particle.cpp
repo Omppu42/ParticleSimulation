@@ -7,7 +7,6 @@
 #include <iostream>
 
 #define TIMESTEP 0.00001f
-#define GRAVITY 9.809f
 #define MAX_SPEED 20.0f
 
 
@@ -17,12 +16,12 @@ void Particle::calculateForceWithParticle(const Particle& otherParticle) {
 
 	const float distanceSquared = x_diff * x_diff + y_diff * y_diff;
 
-	const float F = GRAVITY * m_Mass * otherParticle.m_Mass / distanceSquared;
+	const float F = m_GravityTimesMass * otherParticle.m_Mass / distanceSquared;
 	const float x = F * x_diff;
 	const float y = F * y_diff;
 
-	m_VelX += x / m_Mass * TIMESTEP;
-	m_VelY += y / m_Mass * TIMESTEP;
+	m_VelX += x * m_MassInverse * TIMESTEP;
+	m_VelY += y * m_MassInverse * TIMESTEP;
 }
 
 void Particle::calculateForceWithPosition(const float& _x, const float& _y, const float& _mass) {
@@ -31,12 +30,12 @@ void Particle::calculateForceWithPosition(const float& _x, const float& _y, cons
 
 	const float distanceSquared = x_diff * x_diff + y_diff * y_diff;
 
-	const float F = GRAVITY * m_Mass * _mass / distanceSquared;
+	const float F = m_GravityTimesMass * _mass / distanceSquared;
 	const float x = F * x_diff;
 	const float y = F * y_diff;
 
-	m_VelX += x / m_Mass * TIMESTEP;
-	m_VelY += y / m_Mass * TIMESTEP;
+	m_VelX += x * m_MassInverse * TIMESTEP;
+	m_VelY += y * m_MassInverse * TIMESTEP;
 }
 
 void Particle::UpdatePosition() {

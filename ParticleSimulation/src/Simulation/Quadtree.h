@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <queue>
 #include <stack>
+#include <thread>
 
 #include "Particle.h"
 
@@ -39,8 +40,8 @@ public:
 	}
 };
 
-#define MAX_PARTICLES 16
-#define MAX_DEPTH 8 
+#define MAX_PARTICLES 32
+#define MAX_DEPTH 16
 #define FAR_AWAY_TRESHOLD 90
 
 class Quadtree {
@@ -173,6 +174,7 @@ public:
 	void CalculateParicleVelocityRecursive(Particle& p) { //REUCURSIVE
 		if (centerOfMass.size() == 0) {
 			CalculateCOM();
+			//std::cout << "calculating COM" << std::endl;
 		}
 
 		if (nw == nullptr) {
@@ -193,6 +195,8 @@ public:
 		ne->CalculateParicleVelocityRecursive(p);
 		sw->CalculateParicleVelocityRecursive(p);
 		se->CalculateParicleVelocityRecursive(p);
+
+
 	}
 
 	bool IntersectsRegionOfInfluence(const Particle& p, Quadtree* node) {
