@@ -6,7 +6,7 @@
 class VertexBuffer {
 private:
 	unsigned int m_RendererID;
-	unsigned int m_BufferSizeBytes;
+	unsigned int m_VertexSizeBytes;
 	GLenum m_RenderingHint;
 
 	void VertexVecToData(std::vector<Vertex>& dataIn, std::vector<float>& dataOut);
@@ -18,6 +18,4 @@ public:
 	void UpdateBuffer(std::vector<Vertex>& data);
 	void Bind() const;
 	void Unbind() const;
-
-	inline void UpdateBufferSize(unsigned int newSizeBytes) { m_BufferSizeBytes = newSizeBytes; }
 };

@@ -39,7 +39,8 @@ void IndexBuffer::UpdateIndicies(std::vector<SquareIndicies>& data) {
     for (SquareIndicies i : data) {
         i.PushBackIndicies(m_Indicies);
     }
-    m_Count = data.size() * 6;
+    m_Count = m_Indicies.size();
+
 
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Count * sizeof(unsigned int), static_cast<const void*>(m_Indicies.data()), m_RenderingHint));
 }

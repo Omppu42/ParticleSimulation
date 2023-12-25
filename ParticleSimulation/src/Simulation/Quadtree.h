@@ -44,6 +44,12 @@ public:
 #define MAX_DEPTH 16
 #define FAR_AWAY_TRESHOLD 90
 
+#define DRAW_LINE_W_HALF 0.01f
+#define DRAW_LINE_R 0.0f
+#define DRAW_LINE_G 0.0f
+#define DRAW_LINE_B 1.0f
+
+
 class Quadtree {
 private:
 
@@ -226,6 +232,56 @@ public:
 		}
 
 		centerOfMass =  { x / totalMass, y / totalMass };
+	}
+
+	void Draw(std::vector<Vertex>& verticies, std::vector<SquareIndicies>& squareIndicies) {
+		CreateDrawVerticiesRecursive(verticies, squareIndicies);
+	}
+
+	void CreateDrawVerticiesRecursive(std::vector<Vertex>& verticies, std::vector<SquareIndicies>& squareIndicies) {
+		float rColor = DRAW_LINE_R + depth * 0.05 > 1.0f ? 1.0f : DRAW_LINE_R + depth * 0.05;
+		float lineW = DRAW_LINE_W_HALF / (depth + 1);
+
+												//Top line
+		std::vector<Vertex> newVerticies = { {container.x,				 container.y - lineW,			   rColor, DRAW_LINE_G, DRAW_LINE_B},
+											 {container.x + container.w, container.y - lineW,			   rColor, DRAW_LINE_G, DRAW_LINE_B},
+											 {container.x + container.w, container.y + lineW,			   rColor, DRAW_LINE_G, DRAW_LINE_B},
+											 {container.x,				 container.y + lineW,			   rColor, DRAW_LINE_G, DRAW_LINE_B},
+												
+												//Topright to bottomright
+											 {container.x + container.w - lineW, container.y,			   rColor, DRAW_LINE_G, DRAW_LINE_B},
+											 {container.x + container.w + lineW, container.y,			   rColor, DRAW_LINE_G, DRAW_LINE_B},
+											 {container.x + container.w + lineW, container.y + container.h, rColor, DRAW_LINE_G, DRAW_LINE_B},
+											 {container.x + container.w - lineW, container.y + container.h, rColor, DRAW_LINE_G, DRAW_LINE_B},
+			
+												//Bottom line
+											 {container.x,				 container.y + container.h - lineW, rColor, DRAW_LINE_G, DRAW_LINE_B},
+											 {container.x + container.w, container.y + container.h - lineW, rColor, DRAW_LINE_G, DRAW_LINE_B},
+											 {container.x + container.w, container.y + container.h + lineW, rColor, DRAW_LINE_G, DRAW_LINE_B},
+											 {container.x,				 container.y + container.h + lineW, rColor, DRAW_LINE_G, DRAW_LINE_B},
+
+												//Topleft to bottomleft
+											 {container.x - lineW, container.y,							   rColor, DRAW_LINE_G, DRAW_LINE_B},
+											 {container.x + lineW, container.y,							   rColor, DRAW_LINE_G, DRAW_LINE_B},
+											 {container.x + lineW, container.y + container.h,			   rColor, DRAW_LINE_G, DRAW_LINE_B},
+											 {container.x - lineW, container.y + container.h,			   rColor, DRAW_LINE_G, DRAW_LINE_B}, };
+
+		verticies.insert(verticies.end(), newVerticies.begin(), newVerticies.end());
+
+		unsigned int i = squareIndicies.size() * 4;
+		squareIndicies.push_back(SquareIndicies({  0 + i,  1 + i,  2 + i,  2 + i,  3 + i,  0 + i }));
+		squareIndicies.push_back(SquareIndicies({  4 + i,  5 + i,  6 + i,  6 + i,  7 + i,  4 + i }));
+		squareIndicies.push_back(SquareIndicies({  8 + i,  9 + i, 10 + i, 10 + i, 11 + i,  8 + i }));
+		squareIndicies.push_back(SquareIndicies({ 12 + i, 13 + i, 14 + i, 14 + i, 15 + i, 12 + i }));
+
+		if (!nw) { 
+			return;
+		}
+
+		nw->CreateDrawVerticiesRecursive(verticies, squareIndicies);
+		ne->CreateDrawVerticiesRecursive(verticies, squareIndicies);
+		sw->CreateDrawVerticiesRecursive(verticies, squareIndicies);
+		se->CreateDrawVerticiesRecursive(verticies, squareIndicies);
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const Quadtree& tree) {

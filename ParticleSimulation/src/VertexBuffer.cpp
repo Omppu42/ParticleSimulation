@@ -15,7 +15,7 @@ void VertexBuffer::VertexVecToData(std::vector<Vertex>& dataIn, std::vector<floa
 VertexBuffer::VertexBuffer(std::vector<Vertex> data, unsigned int bytesPerVertex, GLenum renderHint)
     : m_RenderingHint(renderHint) {
 
-    m_BufferSizeBytes = data.size() * bytesPerVertex;
+    m_VertexSizeBytes = bytesPerVertex;
 
     GLCall(glGenBuffers(1, &m_RendererID));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
@@ -27,13 +27,12 @@ VertexBuffer::~VertexBuffer() {
 }
 
 void VertexBuffer::UpdateBuffer(std::vector<Vertex>& data) {
-
     std::vector<float> dataFloats = {};
     VertexVecToData(data, dataFloats);
 
     float* floatPtr = &dataFloats[0];
     const void* voidData = static_cast<const void*>(floatPtr);
-    GLCall(glBufferData(GL_ARRAY_BUFFER, m_BufferSizeBytes, voidData, m_RenderingHint));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, data.size() * m_VertexSizeBytes, voidData, m_RenderingHint));
 }
 
 void VertexBuffer::Bind() const {

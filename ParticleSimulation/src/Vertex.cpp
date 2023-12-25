@@ -1,39 +1,72 @@
 #include "Vertex.h"
+#include "Renderer.h"
+
 #include <vector>
+#include <iostream>
 
-//Vertex::Vertex(float _x, float _y, float _r, float _g, float _b, float _a) {
-//	x = _x;
-//	y = _y;
-//	r = _r;
-//	g = _g;
-//	b = _b;
-//	a = _a;
-//}
+Vertex::Vertex(float _x, float _y) : 
+	x(_x), y(_y) {
+	size = 2;
+}
 
-//void Vertex::GetData(std::vector<float>& dataOut) {
-//	dataOut.push_back(x);
-//	dataOut.push_back(y);
-//	dataOut.push_back(r);
-//	dataOut.push_back(g);
-//	dataOut.push_back(b);
-//	dataOut.push_back(a);
-//}
+Vertex::Vertex(float _x, float _y, float _a) : 
+	x(_x), y(_y), a(_a) {
+	size = 3;
+}
 
-Vertex::Vertex(float _x, float _y, float _a) {
-	x = _x;
-	y = _y;
-	a = _a;
+Vertex::Vertex(float _x, float _y, float _r, float _g, float _b) :
+	x(_x), y(_y), r(_r), g(_g), b(_b) {
+	size = 5;
+}
+
+Vertex::Vertex(float _x, float _y, float _r, float _g, float _b, float _a) :
+	x(_x), y(_y), r(_r), g(_g), b(_b), a(_a) {
+	size = 6;
 }
 
 void Vertex::GetData(std::vector<float>& dataOut) {
-	dataOut.push_back(x);
-	dataOut.push_back(y);
-	dataOut.push_back(a);
+
+	if (size == 2) {
+		dataOut.push_back(x);
+		dataOut.push_back(y);
+	}
+	else if (size == 3) {
+		dataOut.push_back(x);
+		dataOut.push_back(y);
+		dataOut.push_back(a);
+	}
+	else if (size == 5) {
+		dataOut.push_back(x);
+		dataOut.push_back(y);
+		dataOut.push_back(r);
+		dataOut.push_back(g);
+		dataOut.push_back(b);
+	}
+	else if (size == 6) {
+		dataOut.push_back(x);
+		dataOut.push_back(y);
+		dataOut.push_back(r);
+		dataOut.push_back(g);
+		dataOut.push_back(b);
+		dataOut.push_back(a);
+	}
+	else {
+		// Unknown size
+		std::cout << "Unknown Vertex size of " << size << ", inserting a breakpoint here." << std::endl;
+		ASSERT(false);
+	}
+
 }
 
 std::string Vertex::GetDataString() {
 	std::ostringstream os;
-	os << x << ", " << y << ", " << a << ".";
+
+	std::vector<float> elements = { };
+	GetData(elements);
+
+	for (const float& e : elements) {
+		os << e << ", ";
+	}
 
 	return os.str();
 }

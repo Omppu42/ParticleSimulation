@@ -4,16 +4,23 @@
 #include <sstream>
 
 struct Vertex {
-public:
-	float x = 0.0f;
-	float y = 0.0f;
-	/*float r = 1.0f;
+private:
+	float x = 1.0f;
+	float y = 1.0f;
+	float r = 1.0f;
 	float g = 1.0f;
-	float b = 1.0f;*/
+	float b = 1.0f;
 	float a = 1.0f;
 
-	// Vertex(float _x, float _y, float _r, float _g, float _b, float _a);
+	int size = 0;
+
+public:
+	Vertex(float _x, float _y);
 	Vertex(float _x, float _y, float _a);
+	Vertex(float _x, float _y, float _r, float _g, float _b);
+	Vertex(float _x, float _y, float _r, float _g, float _b, float _a);
+	
 	void GetData(std::vector<float>& dataOut);
+	inline int GetSize() { return size; }
 	std::string GetDataString();
 };
