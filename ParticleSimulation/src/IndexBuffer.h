@@ -1,12 +1,13 @@
 #pragma once
 
 #include "GLUtils.h"
+#include "SquareIndicies.h"
 
 #include <GL/glew.h>
-#include <vector>
 
-#include "SquareIndicies.h"
+#include <vector>
 #include <algorithm>
+#include <sstream>
 
 class IndexBuffer {
 private:
@@ -28,6 +29,8 @@ public:
 		
 	void BindAndUpdateIndicies();
 	void AddIndicies(std::vector<unsigned int> newIndicies);
+
+	std::string GetIndiciesStr();
 
 	inline void ClearIndicies() { m_Indicies = { }; m_NextFreeIndicie = 0; }
 	inline unsigned int GetCount() const { return m_Count; }

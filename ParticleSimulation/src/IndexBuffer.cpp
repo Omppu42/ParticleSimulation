@@ -4,6 +4,7 @@
 #include <iostream>
 
 
+
 IndexBuffer::IndexBuffer(GLenum renderHint) : m_RenderingHint(renderHint) {
     ASSERT(sizeof(unsigned int) == sizeof(GLuint));
 
@@ -46,4 +47,15 @@ void IndexBuffer::AddIndicies(std::vector<unsigned int> newIndicies)
     m_Indicies.insert(m_Indicies.end(), newIndicies.begin(), newIndicies.end());
 
     m_NextFreeIndicie = *std::max_element(std::begin(newIndicies), std::end(newIndicies)) + 1;
+}
+
+std::string IndexBuffer::GetIndiciesStr()
+{
+    std::stringstream ss;
+
+    for (unsigned int& i : m_Indicies) {
+        ss << i << ", ";
+    }
+
+    return ss.str();
 }

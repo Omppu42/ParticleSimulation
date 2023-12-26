@@ -121,8 +121,9 @@ int main(void)
         rendererShapes.AddVBLayoutElement(GL_FLOAT, 2);
         rendererShapes.AddVBLayoutElement(GL_FLOAT, 4);
 
-        ShapeGenerator::DrawLine({ 0.9f, -0.5f }, { -0.9f, 0.5f }, 0.1f, { 0.0f, 1.0f, 0.0f, 0.5f }, rendererShapes.vbo, rendererShapes.ibo);
-        ShapeGenerator::DrawLine({ -0.9f, -0.5f }, { 0.9f, 0.5f }, 0.1f, { 0.0f, 1.0f, 0.0f, 0.5f }, rendererShapes.vbo, rendererShapes.ibo);
+        //ShapeGenerator::DrawHorizontalLine({ 0.9f, -0.5f }, { -0.9f, 0.5f }, 0.1f, { 0.0f, 1.0f, 0.0f, 0.5f }, rendererShapes.vbo, rendererShapes.ibo);
+        //ShapeGenerator::DrawVerticalLine({ -0.9f, -0.5f }, { 0.9f, 0.5f }, 0.1f, { 0.0f, 1.0f, 0.0f, 0.5f }, rendererShapes.vbo, rendererShapes.ibo);
+        //ShapeGenerator::DrawCircle({ 0.0f, 0.2f }, 0.2f, 10, { 1.0f, 0.0f, 0.0f, 1.0f }, rendererShapes.vbo, rendererShapes.ibo);
 
         rendererShapes.UpdateVBOandIBO();
         rendererShapes.UnBindAll();
