@@ -2,6 +2,8 @@
 
 #include "../Vertex.h"
 #include "../SquareIndicies.h"
+#include "../VertexBuffer.h"
+#include "../IndexBuffer.h"
 
 #include <vector>
 #include <iostream>
@@ -40,8 +42,8 @@ public:
 	inline float GetXVel() { return m_VelX; }
 
 	void UpdatePosition();
-	void createParticleVerticies(std::vector<Vertex>& verticies, std::vector<SquareIndicies>& squareIndicies);
-	void createParticleVerticies(std::vector<Vertex>& verticies);
+	void createParticleVerticies(VertexBuffer& vbo, IndexBuffer& ibo);
+	void createParticleVerticies(VertexBuffer& vbo);
 	friend std::ostream& operator<<(std::ostream& os, Particle& p);
 	friend bool operator==(const Particle& p1, const Particle& p2);
 };

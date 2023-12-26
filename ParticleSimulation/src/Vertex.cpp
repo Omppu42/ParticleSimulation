@@ -24,6 +24,40 @@ Vertex::Vertex(float _x, float _y, float _r, float _g, float _b, float _a) :
 	size = 6;
 }
 
+Vertex::Vertex(float _x, float _y, std::vector<float> _col) :
+	x(_x), y(_y) {
+	
+	int colors = _col.size();
+
+	switch (colors)
+	{
+	case 1:
+		r = _col[0];
+		break;
+	case 2:
+		r = _col[0];
+		g = _col[1];
+		break;
+	case 3:
+		r = _col[0];
+		g = _col[1];
+		b = _col[2];
+		break;
+	case 4:
+		r = _col[0];
+		g = _col[1];
+		b = _col[2];
+		a = _col[3];
+		break;
+	default:
+		std::cout << "Trying to pass an invalid amount of color data to a vertex (" << colors << ")" << std::endl;
+		ASSERT(false)
+		break;
+	}
+
+	size = 2 + colors;
+}
+
 void Vertex::GetData(std::vector<float>& dataOut) {
 
 	if (size == 2) {

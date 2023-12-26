@@ -1,3 +1,4 @@
+#include "GLUtils.h"
 #include "Renderer.h"
 
 #include <windows.h>
@@ -12,7 +13,9 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "SquareIndicies.h"
-#include "ShaderCompiler.h"
+#include "Shader.h"
+
+#include "ShapeGenerator.h"
 
 #include "Simulation/Particle.h"
 #include "Simulation/Quadtree.h"
@@ -67,18 +70,10 @@ int main(void)
         Quadtree tree(Container(-1.0f, -1.0f, 2.0f, 2.0f), 0);
         ASSERT(tree.GetContainer()->Intersects(1.0f, 0.0f));
 
-        std::vector<Vertex> positionsParticles = {  };
-        std::vector<SquareIndicies> squareIndiciesParticles = {  };
         std::vector<Particle> particlesVector = {  };
-
-        std::vector<Vertex> VerticiesQuadtree = {  };
-        std::vector<SquareIndicies> squareIndiciesQuadtree = {  };
-
 
         //Spawn particles
         ParticleSpawner spawner;
-
-        //TODO: Add quadtree visualization
 
         //fill screen with particles
         //spawner.SpawnSquare(300, particlesVector);
@@ -87,66 +82,50 @@ int main(void)
         //                          |         start velocity      |  center mass   |            spin speed           scr\Simulation\Particle.cpp for approprate simulation speed
         //spawner.SpawnGalaxy({ -0.3f,  0.3f }, { 0.0f, -300.0f }, 1000, 100000.0f, 100.5f, .1f, 1000.0f, particlesVector);
         //spawner.SpawnGalaxy({  0.3f, -0.3f }, { 0.0f,  300.0f }, 20000, 100000.0f,    .5f, .1f, 1000.0f, particlesVector);
-        spawner.SpawnGalaxy({  0.0f, 0.0f },  { 0.0f,  -300.0f }, 20000, 100000.0f,    .5f, .3f, 1000.0f, particlesVector);
+        spawner.SpawnGalaxy({  0.0f, 0.0f },  { 0.0f,  -300.0f }, 10000, 100000.0f,    .5f, .3f, 1000.0f, particlesVector);
         //                                                                                  |              DONT CHANGE                                             
         //                                                                            galaxy radius
         
         std::cout << "Number of particles: " << particlesVector.size() << std::endl;
 
-        //create verticies for particles
-        for (Particle p : particlesVector) {
-            p.createParticleVerticies(positionsParticles, squareIndiciesParticles);
+
+        // PARTICLES RENDERING SETUP
+        RendererState rendererParticles(GL_DYNAMIC_DRAW, GL_STATIC_DRAW, "../ParticleSimulation/res/shaders/Particle.shader");
+
+        rendererParticles.AddVBLayoutElement(GL_FLOAT, 2);
+        rendererParticles.AddVBLayoutElement(GL_FLOAT, 1);
+
+        for (Particle& p : particlesVector) {
+            p.createParticleVerticies(rendererParticles.vbo, rendererParticles.ibo);
         }
 
-        VertexArray vaoParticles;
-        VertexBuffer vboParticles(positionsParticles, 3 * sizeof(float), GL_DYNAMIC_DRAW);
+        rendererParticles.UpdateVBOandIBO();
+        rendererParticles.UnBindAll();
 
-        VertexBufferLayout layoutParticles;
-        layoutParticles.Push(GL_FLOAT, 2, GL_FALSE); // 1st 2 floats are position
-        //layout.Push(GL_FLOAT, 4, GL_FALSE); // next 4 floats are color
-        layoutParticles.Push(GL_FLOAT, 1, GL_FALSE); // next 1 float is alpha
+
+        // QUADTREE RENDERING SETUP
+        RendererState rendererQuadtree(GL_DYNAMIC_DRAW, GL_DYNAMIC_DRAW, "../ParticleSimulation/res/shaders/Quadtree.shader");
+
+        rendererQuadtree.AddVBLayoutElement(GL_FLOAT, 2);
+        rendererQuadtree.AddVBLayoutElement(GL_FLOAT, 3);
+
+        tree.Draw(rendererQuadtree.vbo, rendererQuadtree.ibo);
         
-        vaoParticles.AddBuffer(vboParticles, layoutParticles);
+        rendererQuadtree.UpdateVBOandIBO();
+        rendererQuadtree.UnBindAll();
 
-        IndexBuffer iboParticles(squareIndiciesParticles, GL_STATIC_DRAW);
 
-        //Create particleShaders
-        ShaderProgramSource particleSource = ParseShader("../ParticleSimulation/res/shaders/Particle.shader");
-        unsigned int particleShader = CreateShader(particleSource.VertexSource, particleSource.FragmentSource);
-        
-        //GLCall(glUseProgram(particleShader));
+        // SHAPES RENDERING SETUP
+        RendererState rendererShapes(GL_STATIC_DRAW, GL_STATIC_DRAW, "../ParticleSimulation/res/shaders/Basic.shader");
 
-        //set particle color
-        //GLCall(int location = glGetUniformLocation(particleShader, "u_Color"));
-        //ASSERT(location != -1);
-        //GLCall(glUniform4f(location, 0.1f, 0.3f, 0.8f, 1.0f));
+        rendererShapes.AddVBLayoutElement(GL_FLOAT, 2);
+        rendererShapes.AddVBLayoutElement(GL_FLOAT, 4);
 
-        //GLCall(glUseProgram(0));
-        vboParticles.Unbind();
-        iboParticles.Unbind();
-        vaoParticles.Unbind();
-        
+        ShapeGenerator::DrawLine({ 0.9f, -0.5f }, { -0.9f, 0.5f }, 0.1f, { 0.0f, 1.0f, 0.0f, 0.5f }, rendererShapes.vbo, rendererShapes.ibo);
+        ShapeGenerator::DrawLine({ -0.9f, -0.5f }, { 0.9f, 0.5f }, 0.1f, { 0.0f, 1.0f, 0.0f, 0.5f }, rendererShapes.vbo, rendererShapes.ibo);
 
-        // Create quadtree draw buffers
-        tree.Draw(VerticiesQuadtree, squareIndiciesQuadtree);
-        
-        VertexArray vaoQuadtree;
-        VertexBuffer vboQuadtree(VerticiesQuadtree, 5 * sizeof(float), GL_DYNAMIC_DRAW);
-
-        VertexBufferLayout layoutQuadtree;
-        layoutQuadtree.Push(GL_FLOAT, 2, GL_FALSE); // 1st 2 floats are position
-        layoutQuadtree.Push(GL_FLOAT, 3, GL_FALSE); // next 3 float are for color
-
-        vaoQuadtree.AddBuffer(vboQuadtree, layoutQuadtree);
-
-        IndexBuffer iboQuadtree(squareIndiciesQuadtree, GL_DYNAMIC_DRAW);
-
-        ShaderProgramSource quadtreeSource = ParseShader("../ParticleSimulation/res/shaders/Quadtree.shader");
-        unsigned int quadtreeShader = CreateShader(quadtreeSource.VertexSource, quadtreeSource.FragmentSource);
-
-        vboQuadtree.Unbind();
-        iboQuadtree.Unbind();
-        vaoQuadtree.Unbind();
+        rendererShapes.UpdateVBOandIBO();
+        rendererShapes.UnBindAll();
 
 
         //Framerate calculation variables
@@ -154,7 +133,7 @@ int main(void)
         double startTime = glfwGetTime();
 
         double previousTime = glfwGetTime();
-        const double frameTime = 1.0 / TARGET_FPS;
+        const double targetFrameTime = 1.0 / TARGET_FPS;
 
         // Enable blending
         GLCall(glEnable(GL_BLEND)); 
@@ -162,97 +141,76 @@ int main(void)
 
         while (!glfwWindowShouldClose(window))
         {
-            positionsParticles = {};
-            VerticiesQuadtree = {};
-            squareIndiciesQuadtree = {};
+            rendererParticles.vbo.ClearVerticiesData();
+            rendererQuadtree.vbo.ClearVerticiesData();
+            rendererQuadtree.ibo.ClearIndicies();
             
             if (CAP_FPS) {
                 double currentTime = glfwGetTime();
                 double elapsedTime = currentTime - previousTime;
 
-                if (elapsedTime < frameTime) continue;
-
-                previousTime = currentTime;
+                if (elapsedTime < targetFrameTime) continue;
             }
-
-            //std::cout << std::endl;
 
             GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
             ASSERT(tree.GetTotalMass() == 0);
-            for (Particle p : particlesVector) { //insert particles into quadtree
+            for (Particle& p : particlesVector) { //insert particles into quadtree
                 tree.InsertParticle(p);
             }
 
 
-            //UPDATING PARTICLES
-            tree.CalculateForceOnParticles(particlesVector);
+            // UPDATE PARTICLES
+            {
+                tree.CalculateForceOnParticles(particlesVector);
 
-            for (Particle& p : particlesVector) {
-                p.UpdatePosition();
-                p.createParticleVerticies(positionsParticles);
+                for (Particle& p : particlesVector) {
+                    p.UpdatePosition();
+                    p.createParticleVerticies(rendererParticles.vbo);
+                }
+
+                rendererParticles.UpdateVBO();
+                Renderer::Draw(rendererParticles);
             }
-
-            GLCall(glUseProgram(particleShader));
-
-
-            vaoParticles.Bind();
-            iboParticles.Bind();
-            vboParticles.Bind();
-
-            vboParticles.UpdateBuffer(positionsParticles);
-
-            //std::cout << "color location: " << glGetAttribLocation(particleShader, "color") << std::endl;
-            
-            // draw particles
-            GLCall(glDrawElements(GL_TRIANGLES, squareIndiciesParticles.size() * 6, GL_UNSIGNED_INT, nullptr));
-            
             
 
             if (VISUALIZE_QUADTREE) {
                 // Draw quadtree visualization
-                tree.Draw(VerticiesQuadtree, squareIndiciesQuadtree);
+                tree.Draw(rendererQuadtree.vbo, rendererQuadtree.ibo);
 
-                GLCall(glUseProgram(quadtreeShader));
-
-                vaoQuadtree.Bind();
-                iboQuadtree.Bind();
-                vboQuadtree.Bind();
-
-                vboQuadtree.UpdateBuffer(VerticiesQuadtree);
-                iboQuadtree.UpdateIndicies(squareIndiciesQuadtree);
-
-                // draw quadtree
-                GLCall(glDrawElements(GL_TRIANGLES, squareIndiciesQuadtree.size() * 6, GL_UNSIGNED_INT, nullptr)); 
+                rendererQuadtree.UpdateVBOandIBO();
+                Renderer::Draw(rendererQuadtree);
             }
 
+            // Draw shapes
+            Renderer::Draw(rendererShapes);
 
             glfwSwapBuffers(window);
             glfwPollEvents();
 
             tree.ClearTree();
 
-
             if (CAP_FPS) {
+
                 // Calculate the time taken to render the frame
                 double renderTime = glfwGetTime() - previousTime;
 
                 // Sleep for the remaining time
-                double sleepTime = frameTime - renderTime;
+                double sleepTime = targetFrameTime - renderTime;
                 if (sleepTime > 0.0f) {
                     std::this_thread::sleep_for(std::chrono::duration<double>(sleepTime));
                 }
+                previousTime = glfwGetTime() + sleepTime;
             }
 
             if (CALCULATE_FRAMERATE) {
                 frameNum++;
-                if (frameNum == 100) {
-                    std::cout << "Average Framerate: " << 1 / ((glfwGetTime() - startTime) / frameNum) << ", current time: " << glfwGetTime() - startTime << std::endl;
+                if (frameNum == 1000) {
+                    std::cout << "After " << frameNum << " frames: " << std::endl <<
+                        "  " << ROUND_TO_DECIMAL(1 / ((glfwGetTime() - startTime) / frameNum), 1) << " fps (" << ROUND_TO_DECIMAL((glfwGetTime() - startTime) / frameNum * 1000.0f, 2) << "ms)" << std::endl;
                 }
             }
         }
-        GLCall(glDeleteProgram(particleShader));
-        GLCall(glDeleteProgram(quadtreeShader));
     }
     glfwTerminate();
     return 0;

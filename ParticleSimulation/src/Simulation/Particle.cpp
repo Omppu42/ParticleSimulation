@@ -71,25 +71,21 @@ void Particle::UpdatePosition() {
 
 }
 
-void Particle::createParticleVerticies(std::vector<Vertex>& verticies, std::vector<SquareIndicies>& squareIndicies) {
-	std::vector<Vertex> newVerticies = { {m_X - m_Radius, m_Y - m_Radius, m_Alpha},
-                                         {m_X + m_Radius, m_Y - m_Radius, m_Alpha},
-                                         {m_X + m_Radius, m_Y + m_Radius, m_Alpha},
-                                         {m_X - m_Radius, m_Y + m_Radius, m_Alpha} };
+void Particle::createParticleVerticies(VertexBuffer& vbo, IndexBuffer& ibo) {
+	vbo.AddVertex({ m_X - m_Radius, m_Y - m_Radius, m_Alpha });
+	vbo.AddVertex({ m_X + m_Radius, m_Y - m_Radius, m_Alpha });
+	vbo.AddVertex({ m_X + m_Radius, m_Y + m_Radius, m_Alpha });
+	vbo.AddVertex({ m_X - m_Radius, m_Y + m_Radius, m_Alpha });
 
-    verticies.insert(verticies.end(), newVerticies.begin(), newVerticies.end());
-
-    unsigned int i = squareIndicies.size() * 4;
-    squareIndicies.push_back(SquareIndicies({ 0 + i, 1 + i, 2 + i, 2 + i, 3 + i, 0 + i }));
+    unsigned int i = ibo.GetNextFreeIndicie();
+	ibo.AddIndicies({ i, i + 1, i + 2, i + 2,i + 3,i });
 }
-void Particle::createParticleVerticies(std::vector<Vertex>& verticies) {
 
-	std::vector<Vertex> newVerticies = { {m_X - m_Radius, m_Y - m_Radius, m_Alpha},
-										 {m_X + m_Radius, m_Y - m_Radius, m_Alpha},
-										 {m_X + m_Radius, m_Y + m_Radius, m_Alpha},
-										 {m_X - m_Radius, m_Y + m_Radius, m_Alpha} };
-
-    verticies.insert(verticies.end(), newVerticies.begin(), newVerticies.end());
+void Particle::createParticleVerticies(VertexBuffer& vbo) {
+	vbo.AddVertex({ m_X - m_Radius, m_Y - m_Radius, m_Alpha });
+	vbo.AddVertex({ m_X + m_Radius, m_Y - m_Radius, m_Alpha });
+	vbo.AddVertex({ m_X + m_Radius, m_Y + m_Radius, m_Alpha });
+	vbo.AddVertex({ m_X - m_Radius, m_Y + m_Radius, m_Alpha });
 }
 
 std::ostream& operator<<(std::ostream& os, Particle& p) {

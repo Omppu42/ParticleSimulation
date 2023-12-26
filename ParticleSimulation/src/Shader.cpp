@@ -1,19 +1,28 @@
-#pragma once
+#include "Shader.h"
 
-#include <string>
-#include <sstream>
-#include <fstream>
-#include <iostream>
+Shader::Shader(std::string pathToSource) {
 
-#include "Renderer.h"
+    ParseShader(pathToSource);
+    CreateShader();
+    UseProgram();
+}
 
-struct ShaderProgramSource {
-    std::string VertexSource;
-    std::string FragmentSource;
-};
+Shader::~Shader()
+{
+    GLCall(glDeleteProgram(m_ProgramID));
+}
 
+void Shader::UseProgram() const
+{
+    GLCall(glUseProgram(m_ProgramID));
+}
 
-static ShaderProgramSource ParseShader(const std::string& filepath) {
+void Shader::DisableProgram() const
+{
+    GLCall(glUseProgram(0));
+}
+
+void Shader::ParseShader(const std::string& filepath) {
     std::ifstream stream(filepath);
 
     std::string line;
@@ -41,10 +50,10 @@ static ShaderProgramSource ParseShader(const std::string& filepath) {
         }
     }
     //std::cout << "VERTEX \n" << ss[0].str() << "FRAGMENT \n " << ss[1].str() << std::endl;
-    return { ss[0].str(), ss[1].str() };
+    m_Source = { ss[0].str(), ss[1].str() };
 }
 
-static unsigned int CompileShader(unsigned int type, const std::string& source) {
+unsigned int Shader::CompileShader(unsigned int type, const std::string& source) {
     GLCall(unsigned int id = glCreateShader(type));
     const char* src = &source[0];
     GLCall(glShaderSource(id, 1, &src, nullptr));
@@ -70,19 +79,18 @@ static unsigned int CompileShader(unsigned int type, const std::string& source) 
     return id;
 }
 
-static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader) {
-    GLCall(unsigned int program = glCreateProgram());
+void Shader::CreateShader() {
+    GLCall(m_ProgramID = glCreateProgram());
 
-    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+    unsigned int vs = CompileShader(GL_VERTEX_SHADER, m_Source.VertexSource);
+    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, m_Source.FragmentSource);
 
-    GLCall(glAttachShader(program, vs));
-    GLCall(glAttachShader(program, fs));
-    GLCall(glLinkProgram(program));
-    GLCall(glValidateProgram(program));
+    GLCall(glAttachShader(m_ProgramID, vs));
+    GLCall(glAttachShader(m_ProgramID, fs));
+    GLCall(glLinkProgram(m_ProgramID));
+    GLCall(glValidateProgram(m_ProgramID));
 
     GLCall(glDeleteShader(vs));
     GLCall(glDeleteShader(fs));
 
-    return program;
 }

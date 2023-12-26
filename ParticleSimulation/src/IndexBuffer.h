@@ -1,24 +1,35 @@
 #pragma once
 
+#include "GLUtils.h"
+
 #include <GL/glew.h>
 #include <vector>
+
 #include "SquareIndicies.h"
+#include <algorithm>
 
 class IndexBuffer {
 private:
 	unsigned int m_RendererID;
 	unsigned int m_Count;
 	unsigned int m_RenderingHint;
+	unsigned int m_NextFreeIndicie = 0;
 
-	std::vector<unsigned int> m_Indicies = {};  //Make squareIndicies vector into unsigned int vector
+	std::vector<unsigned int> m_Indicies = {};
 	
+	//void ValidateBoundBuffer();
+
 public:
-	IndexBuffer(std::vector<SquareIndicies>& data, GLenum renderHint);
+	IndexBuffer(GLenum renderHint);
 	~IndexBuffer();
 
 	void Bind() const;
 	void Unbind() const;
-	void UpdateIndicies(std::vector<SquareIndicies>& data);
 		
+	void BindAndUpdateIndicies();
+	void AddIndicies(std::vector<unsigned int> newIndicies);
+
+	inline void ClearIndicies() { m_Indicies = { }; m_NextFreeIndicie = 0; }
 	inline unsigned int GetCount() const { return m_Count; }
+	inline unsigned int GetNextFreeIndicie() const { return m_NextFreeIndicie; }
 };

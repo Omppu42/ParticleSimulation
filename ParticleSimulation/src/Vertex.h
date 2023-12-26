@@ -19,6 +19,7 @@ public:
 	Vertex(float _x, float _y, float _a);
 	Vertex(float _x, float _y, float _r, float _g, float _b);
 	Vertex(float _x, float _y, float _r, float _g, float _b, float _a);
+	Vertex(float _x, float _y, std::vector<float> _col);
 	
 	void GetData(std::vector<float>& dataOut);
 	inline int GetSize() { return size; }

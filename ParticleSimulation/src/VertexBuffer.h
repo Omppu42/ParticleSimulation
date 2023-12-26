@@ -1,21 +1,29 @@
 #pragma once
+
+#include "GLUtils.h"
 #include <GL/glew.h>
 #include <vector>
 #include "Vertex.h"
 
 class VertexBuffer {
 private:
-	unsigned int m_RendererID;
+	std::vector<Vertex> m_Verticies = { };
+
 	unsigned int m_VertexSizeBytes;
 	GLenum m_RenderingHint;
+	unsigned int m_RendererID;
 
-	void VertexVecToData(std::vector<Vertex>& dataIn, std::vector<float>& dataOut);
+	std::vector<float> VertexVecToData();
 
 public:
-	VertexBuffer(std::vector<Vertex> data, unsigned int bytesPerVertex, GLenum renderHint);
+	VertexBuffer(GLenum renderHint);
 	~VertexBuffer();
 
-	void UpdateBuffer(std::vector<Vertex>& data);
+	void BindAndUpdateBuffer();
 	void Bind() const;
 	void Unbind() const;
+
+	inline void AddVerticies(std::vector<Vertex>& newVerticies) { m_Verticies.insert(m_Verticies.end(), newVerticies.begin(), newVerticies.end()); }
+	inline void AddVertex(Vertex newVertex) { m_Verticies.push_back(newVertex); }
+	inline void ClearVerticiesData() { m_Verticies = { }; }
 };

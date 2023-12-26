@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <iostream>
-#include "Renderer.h"
 
 struct VertexBufferElement {
 	unsigned int type;
@@ -17,7 +16,7 @@ struct VertexBufferElement {
 		}
 
 		std::cout << "Invalid type: " << type << std::endl;
-		ASSERT(false);
+		__debugbreak();
 		return 0;
 	}
 };

@@ -1,4 +1,7 @@
 #pragma once
+
+#include "GLUtils.h"
+
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 
